@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables - NEVER commit these
+.env
+**/.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript compiled output
+**/*.js.map
+te-portal-backend/dist/
+
+# Uploads (user-generated files)
+te-portal-backend/uploads/*
+!te-portal-backend/uploads/.gitkeep
+
+# Editor & OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Kiro IDE
+.kiro/
+
+# bcryptjs local copy (installed via npm)
+te-portal-backend/bcryptjs/

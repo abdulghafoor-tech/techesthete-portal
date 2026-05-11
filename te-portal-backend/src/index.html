@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Socket.IO Channel Test</title>
+
+    
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+      }
+      input,
+      button {
+        padding: 8px;
+        margin: 5px 0;
+        width: 300px;
+      }
+      #log {
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 200px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Socket.IO Channel Test</h2>
+
+    <input id="channelId" placeholder="Channel ID" value="1" />
+    <input id="workspaceId" placeholder="Workspace ID" value="1" />
+    <input id="message" placeholder="Message" />
+
+    <br />
+    <button onclick="joinChannel()">Join Channel</button>
+    <button onclick="sendMessage()">Send Message</button>
+
+    <div id="log"></div>
+
+    <script>
+      const log = (msg) => {
+        const div = document.getElementById("log");
+        div.innerHTML += `<div>${msg}</div>`;
+        div.scrollTop = div.scrollHeight;
+      };
+
+      // 🔐 YOUR JWT TOKEN HERE
+      const socket = io("http://localhost:4000", {
+        auth: {
+          token:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsInJvbGVJZCI6Mywicm9sZVRpdGxlIjoiTWVtYmVyIiwiaWF0IjoxNzY3MjQ3NDE2LCJleHAiOjE3NjcyNTEwMTZ9.YpPtLPTFxGF0VDSGr0yyElk6uvxE_lLHvHobk09dhq0",
+        },
+      });
+
+      socket.on("connect", () => {
+        log(" Connected: " + socket.id);
+      });
+
+      socket.on("connect-error", (err) => {
+        log(" Connection error: " + err.message);
+      });
+
+      socket.on("joined-channel", (data) => {
+        log(" Joined channel " + data.channelId);
+      });
+
+      socket.on("join-error", (err) => {
+        log("⚠️ Error: " + err.message);
+      });
+
+      socket.on("new-message", (msg) => {
+        log("💬 " + msg.senderId + ": " + msg.content);
+      });
+
+      function joinChannel() {
+        const channelId = Number(document.getElementById("channelId").value);
+        const workspaceId = Number(
+          document.getElementById("workspaceId").value
+        );
+
+        socket.emit("join-channel", { channelId, workspaceId });
+        log("➡️ join-channel sent");
+      }
+
+      function sendMessage() {
+        const channelId = Number(document.getElementById("channelId").value);
+        const content = document.getElementById("message").value;
+
+        socket.emit("send-channel-message", { channelId, content });
+        log("➡️ send-channel-message sent");
+      }
+    </script>
+  </body>
+</html>
